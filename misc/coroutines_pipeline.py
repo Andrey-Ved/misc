@@ -10,9 +10,9 @@ def init(func):
     return wrapper
 
 
-def stage_start(next_coroutine):
+def stage_start(next_coroutine, number):
     for i in range(10):
-        data = i
+        data = i + number
 
         time.sleep(0.2)
         print(data, end=' - ')
@@ -23,11 +23,11 @@ def stage_start(next_coroutine):
 
 
 @init
-def stage_2(next_coroutine):
+def stage_work(next_coroutine, number):
     try:
         while True:
             data = yield
-            data += 20
+            data += number
 
             time.sleep(0.2)
             print(data, end=' - ')
@@ -39,27 +39,11 @@ def stage_2(next_coroutine):
 
 
 @init
-def stage_3(next_coroutine):
+def stage_final(number):
     try:
         while True:
             data = yield
-            data += 300
-
-            time.sleep(0.2)
-            print(data, end=' - ')
-
-            next_coroutine.send(data)
-
-    except GeneratorExit:
-        next_coroutine.close()
-
-
-@init
-def stage_final():
-    try:
-        while True:
-            data = yield
-            data += 4000
+            data += number
 
             time.sleep(0.2)
             print(data)
@@ -69,10 +53,10 @@ def stage_final():
 
 
 def pipeline():
-    st_final = stage_final()
-    st_3 = stage_3(st_final)
-    st_2 = stage_2(st_3)
-    stage_start(st_2)
+    st_final = stage_final(4000)
+    st_3 = stage_work(st_final, 300)
+    st_2 = stage_work(st_3, 20)
+    stage_start(st_2, 0)
 
 
 if __name__ == '__main__':
