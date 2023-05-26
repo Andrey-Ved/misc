@@ -31,7 +31,6 @@ if __name__ == '__main__':
     ]
 
     for foo in functions:
-        print([
-            f(1)
-            for f in foo()
-        ])
+        print(
+            [f(1) for f in foo()]
+        )

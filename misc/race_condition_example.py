@@ -21,13 +21,14 @@ def main(
 
         process = []
 
-        [process.append(
-            Process(
-                target=increment_value_with_lock if with_lock
-                else increment_value,
-                args=(shared_int, )
+        for _ in range(process_number):
+            process.append(
+                Process(
+                    target=increment_value_with_lock if with_lock
+                    else increment_value,
+                    args=(shared_int, )
+                )
             )
-        ) for _ in range(process_number)]
 
         [p.start() for p in process]
         [p.join() for p in process]

@@ -13,7 +13,7 @@ STICKS_NUMBER = 5
 CYCLES_NUMBER = 10
 PAUSE = 0.1
 
-cycle_completed = Event()
+_cycle_completed = Event()
 _local = local()
 
 
@@ -85,7 +85,7 @@ def main(sticks_number=STICKS_NUMBER):
 
     printer_thread = Thread(
         target=printer,
-        args=(print_queue, cycle_completed)
+        args=(print_queue, _cycle_completed)
     )
 
     printer_thread.start()
@@ -96,7 +96,8 @@ def main(sticks_number=STICKS_NUMBER):
             args=(
                 chopsticks[n],
                 chopsticks[(n + 1) % sticks_number],
-                print_queue)
+                print_queue
+            )
         )
         for n in range(sticks_number)
     ]
@@ -107,7 +108,7 @@ def main(sticks_number=STICKS_NUMBER):
     for thread in threads:
         thread.join()
 
-    cycle_completed.set()
+    _cycle_completed.set()
 
 
 if __name__ == '__main__':

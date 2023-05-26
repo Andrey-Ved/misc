@@ -12,66 +12,75 @@ URLS = ['https://vk.com',
         'https://yandex.ru/']
 
 
-def threaded(func):
+def threaded(foo):
     def wrap():
         loop = asyncio.get_running_loop()
-        return loop.run_in_executor(None, func)
+        return loop.run_in_executor(None, foo)
+
+    return wrap
+
+
+def time_print(foo):
+    def wrap(*args):
+        start = time()
+        print(f'{foo(*args)} ->', time()-start)
+
+    return wrap
+
+
+def async_time_print(coo):
+    async def wrap(*args):
+        start = time()
+        print(f'{await coo(*args)} ->', time()-start)
+        return
 
     return wrap
 
 
 @threaded
+@time_print
 def blocking_io(n=6):
-    start = time()
-
     with open('temp.txt', 'w') as f:
         for _ in range(10**n):
             f.writelines('*' * n + '\n')
 
-    print('file writen finished ->', time()-start)
-    return True
+    return 'file writen finished'
 
 
 @threaded
+@time_print
 def other(n=4):
-    start = time()
-
     for step in range(n):
         sleep(0.4)
-        print(f'work step {step}')
+        print(f'   work step {step}')
 
-    print('worker finished ->', time() - start)
-    return True
+    return 'worker finished'
 
 
 @threaded
+@time_print
 def cpu_bond(n=7):
-    start = time()
+    _ = sum(i*i for i in range(10**n))
 
-    bonds = sum(i*i for i in range(10**n))
-
-    print('cpu bond finished ->', time()-start)
-    return bonds
+    return 'cpu bond finished'
 
 
 @threaded
+@time_print
 def load_urls(timeout=60):
     urls = URLS
-    start = time()
 
     for url in urls:
-        print(f'load {url}')
+        print(f'   load {url}')
 
         with request.urlopen(url, timeout=timeout) as conn:
             _ = conn.read
 
-    print('urls load finished ->', time() - start)
-    return True
+    return 'urls load finished'
 
 
+@async_time_print
 async def main():
-    start = time()
-
     await asyncio.gather(
         blocking_io(),
         other(),
@@ -79,8 +88,8 @@ async def main():
         load_urls()
     )
 
-    print('\n**********************\n')
-    print('finish stage ->', time() - start)
+    return f'\n**********************' \
+           f'\nfinish stage'
 
 
 if __name__ == '__main__':
