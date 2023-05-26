@@ -23,7 +23,7 @@ def threaded(foo):
 def time_print(foo):
     def wrap(*args):
         start = time()
-        print(f'{foo(*args)} ->', time()-start)
+        print(f'{foo(*args)} -> {(time()-start):.3f}')
 
     return wrap
 
@@ -31,7 +31,7 @@ def time_print(foo):
 def async_time_print(coo):
     async def wrap(*args):
         start = time()
-        print(f'{await coo(*args)} ->', time()-start)
+        print(f'{await coo(*args)} -> {(time()-start):.3f}')
         return
 
     return wrap
