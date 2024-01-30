@@ -10,3 +10,5 @@
 - decorators_example 
 - lambda_in_list
 
+# 30.01.2024, Igor Lytkin
+- test_itertools
