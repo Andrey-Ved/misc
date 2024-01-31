@@ -6,6 +6,7 @@
  
 - checking_braces_via_coroutines
 - coroutines_pipeline
+- generator_with_feedback
   
 - decorators_example 
 - lambda_in_list
